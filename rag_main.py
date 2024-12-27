@@ -14,6 +14,12 @@ import re
 #            CONFIG & SETUP            #
 ########################################
 
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    os.system("python -m spacy download en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+
 CLAUDE_API_KEY = st.secrets.get("claude", {}).get("claude_auth", "YOUR_CLAUDE_API_KEY")
 client = anthropic.Client(api_key=CLAUDE_API_KEY)
 
