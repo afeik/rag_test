@@ -21,3 +21,4 @@ spacy
 PyPDF2
 sentence_transformers == 3.3.1
 faiss-cpu == 1.9.0.post1
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0.tar.gz
