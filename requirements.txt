@@ -19,6 +19,5 @@ google-cloud-secret-manager
 streamlit_extras
 spacy
 PyPDF2
-sentence_transformers
-faiss
-re
+sentence_transformers == 3.3.1
+faiss-cpu == 1.9.0.post1
