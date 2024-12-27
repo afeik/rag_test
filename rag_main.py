@@ -243,6 +243,19 @@ class ClaudeAgent:
 ########################################
 
 def main():
+
+    # Function to load the spaCy model
+    def load_spacy_model():
+        try:
+            nlp = spacy.load("en_core_web_sm")
+        except OSError:
+            st.warning("Downloading and installing spaCy model 'en_core_web_sm'...")
+            os.system("python -m spacy download en_core_web_sm")
+            nlp = spacy.load("en_core_web_sm")
+        return nlp
+
+    # Load the model
+    nlp = load_spacy_model()
     st.title("RAG System for some energy transition papers")
     st.write("Processes PDFs and answers queries with Claude.")
 
