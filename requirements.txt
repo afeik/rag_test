@@ -18,7 +18,6 @@ streamlit_analytics2==0.8.7
 google-cloud-secret-manager
 streamlit_extras
 spacy
-hashlib
 PyPDF2
 sentence_transformers
 faiss
