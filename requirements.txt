@@ -17,8 +17,7 @@ psycopg2-binary==2.9.10
 streamlit_analytics2==0.8.7
 google-cloud-secret-manager
 streamlit_extras
-spacy
-PyPDF2
+spacy == 3.8.3
+PyPDF2 == 3.0.1
 sentence_transformers == 3.3.1
 faiss-cpu == 1.9.0.post1
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0.tar.gz
