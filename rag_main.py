@@ -32,35 +32,31 @@ METADATA_FILE = "metadata.json"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 EMBEDDING_MODEL = SentenceTransformer(EMBEDDING_MODEL_NAME)
 
-# Load spaCy model for semantic splitting
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    st.warning("spaCy model not found. Installing 'en_core_web_sm'...")
-    os.system("python -m spacy download en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+# Paper titles
+titles = [
+    "Swiss Energy System 2050: Pathways to Net Zero CO 2 and Security of Supply - A basic report, Swiss Academies of Arts and Sciences",
+    "Policy-relevance of a Model Inter-comparison: Switzerland in the European Energy Transition - Sansavini et al.",
+    "Energy security in a net zero emissions future for Switzerland Expert Group (Security of Supply) – White Paper - Hug, Patt et al.",
+    "High resolution generation expansion planning considering flexibility needs: The case of Switzerland in 2030 - G. Hug et al.",
+    "The Swiss energy transition: Policies to address the Energy Trilemma, Georges, Gil; Boulouchos, Konstantinos et al.",
+    "The role of digital social practices and technologies in the Swiss energy transition towards net-zero carbon dioxide emissions in 2050 - Panos et al.",
+    "A historical turning point? Early evidence on how the Russia-Ukraine war changes public support for clean energy policies - Patt, Anthony et al.",
+    "Social and environmental policy in sustainable energy transition - Yulia Ermolaeva",
+    "Phases of the net-zero energy transition and strategies to achieve it - Jochen Markard and Daniel Rosenbloom",
+    "Geopolitical dimensions of the energy transition - Kamasa Julian",
+    "Navigating the clean energy transition in the COVID-19 crisis - Bjarne Steffen, Tobias M Schmidt et al.",
+    "Of renewable energy, energy democracy, and sustainable development: A roadmap to accelerate the energy transition in developing countries - Cantarero et al.",
+    "Energy requirements and carbon emissions for a low-carbon energy transition - Nature Communications - Daniel W. O’Neill et al."
+]
 
 ########################################
 #         SEMANTIC SPLITTING           #
 ########################################
 
-def spacy_semantic_splitter(
-    text, 
-    max_chunk_size=1500, 
-    chunk_overlap=50,  # Smaller overlap to reduce embedding count
-    ignore_references=True, 
-    remove_citations=True
-):
+def spacy_semantic_splitter(text, max_chunk_size=1500, chunk_overlap=50):
     """
-    Custom splitter for academic papers with preprocessing options.
+    Splits the text semantically using spaCy.
     """
-    if ignore_references and "References" in text:
-        text = text.split("References")[0]
-
-    if remove_citations:
-        text = re.sub(r"\([A-Za-z]+( et al\.)?,?\s?\d{4}\)", "", text)
-        text = re.sub(r"\[\d+\]", "", text)
-    
     doc = nlp(text)
     sentences = [sent.text.strip() for sent in doc.sents if sent.text.strip()]
 
@@ -76,17 +72,7 @@ def spacy_semantic_splitter(
     if current_chunk:
         chunks.append(current_chunk.strip())
 
-    if chunk_overlap > 0:
-        new_chunks = []
-        for i, chunk in enumerate(chunks):
-            if i == 0:
-                new_chunks.append(chunk)
-            else:
-                overlap_part = chunks[i-1][-chunk_overlap:]
-                new_chunks.append(overlap_part + " " + chunk)
-        chunks = [c.strip() for c in new_chunks]
-
-    return [c for c in chunks if c]
+    return chunks
 
 ########################################
 #         AGENTS / CLASSES             #
@@ -99,9 +85,6 @@ class PDFProcessingAgent:
         self.metadata_file = metadata_file
         self.metadata = self._load_metadata()
 
-        if not os.path.exists(self.folder):
-            os.makedirs(self.folder)
-
     def _load_metadata(self):
         if os.path.exists(self.metadata_file):
             with open(self.metadata_file, "r") as f:
@@ -112,8 +95,7 @@ class PDFProcessingAgent:
         with open(self.metadata_file, "w") as f:
             json.dump(self.metadata, f, indent=2)
 
-    @staticmethod
-    def _compute_file_hash(filepath):
+    def _compute_file_hash(self, filepath):
         sha256_hash = hashlib.sha256()
         with open(filepath, "rb") as f:
             for byte_block in iter(lambda: f.read(4096), b""):
@@ -126,40 +108,50 @@ class PDFProcessingAgent:
         for page in reader.pages:
             page_text = page.extract_text()
             if page_text:
-                full_text += page_text
+                # Normalize text encoding
+                full_text += page_text.encode("utf-8", errors="replace").decode("utf-8")
         return full_text
+
+    def _extract_from_abstract(self, full_text):
+        """
+        Attempt to extract content starting from the abstract and excluding references.
+        """
+        abstract_start = re.search(r"(?i)\babstract\b", full_text)
+        references_start = re.search(r"(?i)\breferences\b", full_text)
+
+        if abstract_start:
+            start_idx = abstract_start.start()
+            end_idx = references_start.start() if references_start else len(full_text)
+            return full_text[start_idx:end_idx]
+        else:
+            # Fallback: Process the entire document
+            return full_text
 
     def process_pdfs(self):
         text_chunks = []
         changed = False
 
-        if not os.path.exists(self.folder):
-            st.warning(f"PDF folder '{self.folder}' does not exist. Skipping PDF processing.")
-            return text_chunks, changed
-
         pdf_files = [f for f in os.listdir(self.folder) if f.endswith(".pdf")]
-        #st.write(f"Found {len(pdf_files)} PDF(s) in '{self.folder}'.")
-
         for pdf_file in pdf_files:
             pdf_path = os.path.join(self.folder, pdf_file)
             file_hash = self._compute_file_hash(pdf_path)
 
-            if (pdf_file not in self.metadata) or (self.metadata[pdf_file] != file_hash):
-                st.write(f"Processing new or updated PDF: {pdf_file}")
+            if pdf_file not in self.metadata or self.metadata[pdf_file] != file_hash:
                 raw_text = self._extract_text_from_pdf(pdf_path)
-                chunks = self.splitter_func(raw_text)
-                self.metadata[pdf_file] = file_hash
+                processed_text = self._extract_from_abstract(raw_text)
+                chunks = self.splitter_func(processed_text)
                 text_chunks.extend(chunks)
+                self.metadata[pdf_file] = file_hash
                 changed = True
 
-        removed_files = [f for f in self.metadata if f not in pdf_files]
-        for removed_file in removed_files:
-            del self.metadata[removed_file]
-            changed = True
+        # Remove metadata for deleted files
+        existing_files = set(pdf_files)
+        for file in list(self.metadata.keys()):
+            if file not in existing_files:
+                del self.metadata[file]
+                changed = True
 
-        if changed:
-            self._save_metadata()
-
+        self._save_metadata()
         return text_chunks, changed
 
 class EmbeddingIndexAgent:
@@ -168,53 +160,25 @@ class EmbeddingIndexAgent:
         self.index_file = index_file
         self.chunks_file = chunks_file
 
-    @staticmethod
-    def normalize_vectors(vectors):
-        return np.array([v / np.linalg.norm(v) for v in vectors])
-
     def load_or_create_index(self):
-        if os.path.exists(self.index_file) and os.path.exists(self.chunks_file):
-            st.write("Loading existing FAISS index & text chunks...")
-            faiss_index = faiss.read_index(self.index_file)
-            text_chunks = np.load(self.chunks_file, allow_pickle=True).tolist()
-            return faiss_index, text_chunks
-        else:
-            st.write("No existing index found. Creating a new one...")
-            return None, []
+        if os.path.exists(self.index_file):
+            return faiss.read_index(self.index_file), np.load(self.chunks_file, allow_pickle=True).tolist()
+        return None, []
 
     def update_index(self, faiss_index, text_chunks, new_text_chunks):
-        st.write(f"Generating embeddings for {len(new_text_chunks)} new chunks...")
         new_embeddings = [self.model.encode(chunk) for chunk in new_text_chunks]
-        new_embeddings = self.normalize_vectors(np.array(new_embeddings))
 
         if faiss_index is None:
-            dimension = new_embeddings.shape[1]
+            dimension = len(new_embeddings[0])
             faiss_index = faiss.IndexFlatIP(dimension)
-            faiss_index.add(new_embeddings)
-            text_chunks = new_text_chunks
+            faiss_index.add(np.array(new_embeddings))
         else:
-            faiss_index.add(new_embeddings)
-            text_chunks.extend(new_text_chunks)
+            faiss_index.add(np.array(new_embeddings))
 
         faiss.write_index(faiss_index, self.index_file)
-        np.save(self.chunks_file, text_chunks)
+        np.save(self.chunks_file, text_chunks + new_text_chunks)
 
-        return faiss_index, text_chunks
-
-class QueryAgent:
-    def __init__(self, model, faiss_index, text_chunks):
-        self.model = model
-        self.faiss_index = faiss_index
-        self.text_chunks = text_chunks
-
-    def query(self, user_query, top_k=5):
-        query_embedding = self.model.encode(user_query)
-        normalized_query = query_embedding / np.linalg.norm(query_embedding)
-        distances, indices = self.faiss_index.search(
-            np.array([normalized_query]), k=top_k
-        )
-        results = [self.text_chunks[i] for i in indices[0]]
-        return results
+        return faiss_index, text_chunks + new_text_chunks
 
 class ClaudeAgent:
     def __init__(self, client):
@@ -235,7 +199,7 @@ class ClaudeAgent:
             temperature=0.7,
             messages=[{"role": "user", "content": prompt}]
         )
-
+        
         return response.content[0].text.strip()
 
 ########################################
@@ -243,46 +207,55 @@ class ClaudeAgent:
 ########################################
 
 def main():
+    st.title("Energy Transition Knowledge Base")
 
-    st.title("RAG System for some energy transition papers")
-    st.write("Processes PDFs and answers queries with Claude.")
+    st.sidebar.header("Overview of Papers")
+    for title in titles:
+        st.sidebar.write(f"- {title}")
+
+    st.sidebar.write("\n---\n**Developed for insights into the energy transition.")
 
     splitter_func = spacy_semantic_splitter
     pdf_agent = PDFProcessingAgent(PDF_FOLDER, splitter_func, METADATA_FILE)
     embedding_agent = EmbeddingIndexAgent(EMBEDDING_MODEL, INDEX_FILE, TEXT_CHUNKS_FILE)
 
-    faiss_index, text_chunks = embedding_agent.load_or_create_index()
+    with st.spinner("Loading or creating the FAISS Database index..."):
+        faiss_index, text_chunks = embedding_agent.load_or_create_index()
 
     with st.spinner("Processing PDFs..."):
         new_text_chunks, changed = pdf_agent.process_pdfs()
 
-    if changed and new_text_chunks:
+    if changed:
         with st.spinner("Updating the FAISS index..."):
-            faiss_index, text_chunks = embedding_agent.update_index(
-                faiss_index=faiss_index,
-                text_chunks=text_chunks,
-                new_text_chunks=new_text_chunks
-            )
+            faiss_index, text_chunks = embedding_agent.update_index(faiss_index, text_chunks, new_text_chunks)
 
-    st.write("## Ask a Question")
-    query = st.text_input("Enter your query here:")
+    st.header("Ask a Question")
+    query = st.text_input("Enter your question:")
     if query:
-        if faiss_index is None or not text_chunks:
-            st.warning("No FAISS index created yet or no chunks available.")
-        else:
-            query_agent = QueryAgent(EMBEDDING_MODEL, faiss_index, text_chunks)
-            retrieved_chunks = query_agent.query(query, top_k=5)
+        with st.spinner("Searching for relevant information and generating response..."):
+            query_embeddings = EMBEDDING_MODEL.encode([query])
+            distances, indices = faiss_index.search(query_embeddings, k=5)
 
-            st.write("### Retrieved Context")
-            for i, chunk in enumerate(retrieved_chunks, start=1):
-                st.write(f"**Chunk {i}:** {chunk}")
+            # Deduplicate chunks
+            seen_chunks = set()
+            results = []
+            for idx in indices[0]:
+                chunk = text_chunks[idx]
+                chunk_hash = hashlib.md5(chunk.encode("utf-8")).hexdigest()
+                if chunk_hash not in seen_chunks:
+                    seen_chunks.add(chunk_hash)
+                    results.append(chunk)
 
-            with st.spinner("Generating response with Claude..."):
-                claude_agent = ClaudeAgent(client)
-                context_str = "\n\n".join(retrieved_chunks)
-                response = claude_agent.call_claude(query, context_str)
-                st.write("### Claude's Response")
-                st.write(response)
+            claude_agent = ClaudeAgent(client)
+            context_str = "\n\n".join(results)
+            response = claude_agent.call_claude(query, context_str)
+
+        with st.expander("View Retrieved Chunks"):
+            for i, result in enumerate(results):
+                st.write(f"**Chunk {i+1}:** {result}")
+
+        st.subheader("Claude's Response")
+        st.write(response)
 
 if __name__ == "__main__":
     main()
