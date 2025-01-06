@@ -1,0 +1,11 @@
+[theme]
+base="light"
+
+[client]
+showErrorDetails = false
+toolbarMode = "viewer"
+showSidebarNavigation = false
+
+
+[server]
+page_title = "Solar Energy Chatbot"

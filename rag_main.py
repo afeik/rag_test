@@ -138,7 +138,7 @@ class PDFProcessingAgent:
             return text_chunks, changed
 
         pdf_files = [f for f in os.listdir(self.folder) if f.endswith(".pdf")]
-        st.write(f"Found {len(pdf_files)} PDF(s) in '{self.folder}'.")
+        #st.write(f"Found {len(pdf_files)} PDF(s) in '{self.folder}'.")
 
         for pdf_file in pdf_files:
             pdf_path = os.path.join(self.folder, pdf_file)
