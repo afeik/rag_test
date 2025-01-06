@@ -209,53 +209,81 @@ class ClaudeAgent:
 def main():
     st.title("Energy Transition Knowledge Base")
 
+    # Sidebar titles overview
     st.sidebar.header("Overview of Papers")
     for title in titles:
         st.sidebar.write(f"- {title}")
 
-    st.sidebar.write("\n---\n**Developed for insights into the energy transition.")
+    st.sidebar.write("\n---\n**Developed for insights into the energy transition.**")
 
     splitter_func = spacy_semantic_splitter
     pdf_agent = PDFProcessingAgent(PDF_FOLDER, splitter_func, METADATA_FILE)
     embedding_agent = EmbeddingIndexAgent(EMBEDDING_MODEL, INDEX_FILE, TEXT_CHUNKS_FILE)
 
+    # Check for the presence of PDF folder and files
+    if not os.path.exists(PDF_FOLDER):
+        st.warning(f"PDF folder '{PDF_FOLDER}' not found. Processing of new PDFs is disabled.")
+        pdf_files_present = False
+    else:
+        pdf_files_present = True
+
+    # Load or create FAISS index
     with st.spinner("Loading or creating the FAISS Database index..."):
-        faiss_index, text_chunks = embedding_agent.load_or_create_index()
+        try:
+            faiss_index, text_chunks = embedding_agent.load_or_create_index()
+        except Exception as e:
+            st.error(f"Error loading FAISS index or text chunks: {e}")
+            faiss_index = None
+            text_chunks = []
 
-    with st.spinner("Processing PDFs..."):
-        new_text_chunks, changed = pdf_agent.process_pdfs()
+    # Process PDFs if folder exists
+    if pdf_files_present:
+        with st.spinner("Processing PDFs..."):
+            try:
+                new_text_chunks, changed = pdf_agent.process_pdfs()
+                if changed:
+                    with st.spinner("Updating the FAISS index..."):
+                        faiss_index, text_chunks = embedding_agent.update_index(faiss_index, text_chunks, new_text_chunks)
+            except Exception as e:
+                st.error(f"Error processing PDFs: {e}")
 
-    if changed:
-        with st.spinner("Updating the FAISS index..."):
-            faiss_index, text_chunks = embedding_agent.update_index(faiss_index, text_chunks, new_text_chunks)
-
+    # Ask a question
     st.header("Ask a Question")
     query = st.text_input("Enter your question:")
+
     if query:
-        with st.spinner("Searching for relevant information and generating response..."):
-            query_embeddings = EMBEDDING_MODEL.encode([query])
-            distances, indices = faiss_index.search(query_embeddings, k=5)
+        if faiss_index is None:
+            st.error("No FAISS index is available. Ensure the required files are uploaded.")
+        else:
+            with st.spinner("Searching for relevant information and generating response..."):
+                try:
+                    query_embeddings = EMBEDDING_MODEL.encode([query])
+                    distances, indices = faiss_index.search(query_embeddings, k=5)
 
-            # Deduplicate chunks
-            seen_chunks = set()
-            results = []
-            for idx in indices[0]:
-                chunk = text_chunks[idx]
-                chunk_hash = hashlib.md5(chunk.encode("utf-8")).hexdigest()
-                if chunk_hash not in seen_chunks:
-                    seen_chunks.add(chunk_hash)
-                    results.append(chunk)
+                    # Deduplicate chunks
+                    seen_chunks = set()
+                    results = []
+                    for idx in indices[0]:
+                        chunk = text_chunks[idx]
+                        chunk_hash = hashlib.md5(chunk.encode("utf-8")).hexdigest()
+                        if chunk_hash not in seen_chunks:
+                            seen_chunks.add(chunk_hash)
+                            results.append(chunk)
 
-            claude_agent = ClaudeAgent(client)
-            context_str = "\n\n".join(results)
-            response = claude_agent.call_claude(query, context_str)
+                    claude_agent = ClaudeAgent(client)
+                    context_str = "\n\n".join(results)
+                    response = claude_agent.call_claude(query, context_str)
 
-        with st.expander("View Retrieved Chunks"):
-            for i, result in enumerate(results):
-                st.write(f"**Chunk {i+1}:** {result}")
+                    # Display results
+                    with st.expander("View Retrieved Chunks"):
+                        for i, result in enumerate(results):
+                            st.write(f"**Chunk {i+1}:** {result}")
 
-        st.subheader("Claude's Response")
-        st.write(response)
+                    st.subheader("Claude's Response")
+                    st.write(response)
+                except Exception as e:
+                    st.error(f"Error during query processing: {e}")
+
 
 if __name__ == "__main__":
     main()
