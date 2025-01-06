@@ -222,7 +222,7 @@ def main():
 
     # Check for the presence of PDF folder and files
     if not os.path.exists(PDF_FOLDER):
-        st.warning(f"PDF folder '{PDF_FOLDER}' not found. Processing of new PDFs is disabled.")
+        #st.warning(f"PDF folder '{PDF_FOLDER}' not found. Processing of new PDFs is disabled.")
         pdf_files_present = False
     else:
         pdf_files_present = True
