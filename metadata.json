@@ -1,15 +1,54 @@
 {
-  "ETHZurichESCWhitePaper_EnergySecurity_20230524.pdf": "2fe8e897315cf562a8022be806387e572f4b2a738b5b7691da0f77e4b28e740d",
-  "PIIS254243512030180X.pdf": "c59e4d1e9a6b1b833dbb721bf79776b364a99e13040db055338d8d730ab63d7f",
-  "2311.09472v1.pdf": "10d82a54a75e9cfabbea0d2cbb138b45d07010c8ca716a7147699e0bc6781e79",
-  "s41467-022-33976-5.pdf": "ee59dfe45d62b36488c08589ac184390a60e9d03c9b209550e5ca91cbfb386f1",
-  "1-s2.0-S2214629620302917-main.pdf": "db6cccc947c7a43951f8d443b3a7a31774649eafdd3baecb270f3768e28b8f40",
-  "1-s2.0-S2214629622002614-main.pdf": "1ab22b5233cf205be9790f587797d4215461ce0a2ceb5c1b0d7ee05a1707b718",
-  "91122_REPORT_Energy_E_web.pdf": "e933c3041d28ce204dcf85d4b00f254f4dae8466b1dc77262d2b7a88badb9056",
-  "2412.12964v1.pdf": "396f64c10c74652cfd0fcb429daab2429dcea55fdf735ed2da0b3f128154f0fa",
-  "1-s2.0-S0301421520306376-main.pdf": "0b036084c339d48ae7fd61490b734f5c0e07b9de2f6c9aa66176b9491f687242",
-  "1-s2.0-S0301421524002234-main.pdf": "990d853f851e40ffedc036c2f854f4ee810b87ddb6d71f3c71e880891ea06063",
-  "CSSAnalyse308-EN.pdf": "a349130db821046292f08b5522578689ecaca3a7591e7fa2e1db1392f0dcad02",
-  "978-3-031-30231-2_27-1.pdf": "2ad0c190028927f9cd9f056972e3299d46933c22e7e69c63c18388670687ddd8",
-  "2101.01486v1.pdf": "ab5b34778196cfb55a93c36492d424eb6dad62ca32d4ff058cbfb8954cbf0225"
+  "Geopolitical Dimensions of the Energy Transition_Kamasa.pdf": {
+    "hash": "a349130db821046292f08b5522578689ecaca3a7591e7fa2e1db1392f0dcad02",
+    "title": "Geopolitical Dimensions of the Energy Transition Kamasa"
+  },
+  "The Swiss energy transition: Policies to address the Energy Trilemma_Weiss_Pareschi_Georges_Boulouchos.pdf": {
+    "hash": "0b036084c339d48ae7fd61490b734f5c0e07b9de2f6c9aa66176b9491f687242",
+    "title": "The Swiss energy transition: Policies to address the Energy Trilemma Weiss Pareschi Georges Boulouchos"
+  },
+  "Social and Environmental Policy in Sustainable Energy Transition_Ermolaeva.pdf": {
+    "hash": "2ad0c190028927f9cd9f056972e3299d46933c22e7e69c63c18388670687ddd8",
+    "title": "Social and Environmental Policy in Sustainable Energy Transition Ermolaeva"
+  },
+  "High Resolution Planning  Expansion Planning Considering Flexibility Needs: The Case of Switzerland in 2030 _Raycheva_Garrison_Schaffner_Hug.pdf": {
+    "hash": "ab5b34778196cfb55a93c36492d424eb6dad62ca32d4ff058cbfb8954cbf0225",
+    "title": "High Resolution Planning  Expansion Planning Considering Flexibility Needs: The Case of Switzerland in 2030  Raycheva Garrison Schaffner Hug"
+  },
+  "The role of digital social practices and technologies in the Swiss energy transition towards net-zero carbon dioxide emissions in 2050_Stermieri_Kober_McKenna_Schmidt_Panos.pdf": {
+    "hash": "990d853f851e40ffedc036c2f854f4ee810b87ddb6d71f3c71e880891ea06063",
+    "title": "The role of digital social practices and technologies in the Swiss energy transition towards net-zero carbon dioxide emissions in 2050 Stermieri Kober McKenna Schmidt Panos"
+  },
+  "Navigating the Clean Energy Transition in the COVID-19 Crisis_Steffen_Egli_Pahle_Schmidt.pdf": {
+    "hash": "c59e4d1e9a6b1b833dbb721bf79776b364a99e13040db055338d8d730ab63d7f",
+    "title": "Navigating the Clean Energy Transition in the COVID-19 Crisis Steffen Egli Pahle Schmidt"
+  },
+  "Swiss Energy System 2050: Pathways to Net Zero CO 2 and Security of Supply_SwissAcademyandSciences.pdf": {
+    "hash": "e933c3041d28ce204dcf85d4b00f254f4dae8466b1dc77262d2b7a88badb9056",
+    "title": "Swiss Energy System 2050: Pathways to Net Zero CO 2 and Security of Supply SwissAcademyandSciences"
+  },
+  "Policy-relevance of a Model Inter-comparison: Switzerland in the European Energy Transition_Liedekerke_Gjorgiev_Savelsberg_Wen_Dujardin_Darudi_Sasse_Trtnevyte_Lehning_Sansavini.pdf": {
+    "hash": "396f64c10c74652cfd0fcb429daab2429dcea55fdf735ed2da0b3f128154f0fa",
+    "title": "Policy-relevance of a Model Inter-comparison: Switzerland in the European Energy Transition Liedekerke Gjorgiev Savelsberg Wen Dujardin Darudi Sasse Trtnevyte Lehning Sansavini"
+  },
+  "Energy security in a net zero emissions future for Switzerland_Hug_etal.pdf": {
+    "hash": "2fe8e897315cf562a8022be806387e572f4b2a738b5b7691da0f77e4b28e740d",
+    "title": "Energy security in a net zero emissions future for Switzerland Hug etal"
+  },
+  "Energy requirements and carbon emissions for a low-carbon energy transition_Slamersak_Kallis_ONeill.pdf": {
+    "hash": "ee59dfe45d62b36488c08589ac184390a60e9d03c9b209550e5ca91cbfb386f1",
+    "title": "Energy requirements and carbon emissions for a low-carbon energy transition Slamersak Kallis ONeill"
+  },
+  "A historical turning point? Early evidence on how the Russia-Ukraine war changes public support for clean energy policies_Steffen_Patt.pdf": {
+    "hash": "1ab22b5233cf205be9790f587797d4215461ce0a2ceb5c1b0d7ee05a1707b718",
+    "title": "A historical turning point? Early evidence on how the Russia-Ukraine war changes public support for clean energy policies Steffen Patt"
+  },
+  "Of renewable energy, energy democracy, and sustainable development: A roadmap to accelerate the energy transition in developing countries_Cantarero.pdf": {
+    "hash": "db6cccc947c7a43951f8d443b3a7a31774649eafdd3baecb270f3768e28b8f40",
+    "title": "Of renewable energy, energy democracy, and sustainable development: A roadmap to accelerate the energy transition in developing countries Cantarero"
+  },
+  "Phases of the Net-zero Energy Transition and Strategies to Achieve It_Markard_Rosenbloom.pdf": {
+    "hash": "10d82a54a75e9cfabbea0d2cbb138b45d07010c8ca716a7147699e0bc6781e79",
+    "title": "Phases of the Net-zero Energy Transition and Strategies to Achieve It Markard Rosenbloom"
+  }
 }
