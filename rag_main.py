@@ -333,7 +333,7 @@ def main():
 
     # Check for the presence of the PDF folder
     if not os.path.exists(PDF_FOLDER):
-        st.warning(f"PDF folder '{PDF_FOLDER}' not found. Upload or create it for processing.")
+        #st.warning(f"PDF folder '{PDF_FOLDER}' not found. Upload or create it for processing.")
         pdf_files_present = False
     else:
         pdf_files_present = True
