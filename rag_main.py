@@ -148,9 +148,9 @@ def main():
     with st.spinner("Loading indexes..."):
         chunk_ix, text_chunks, summary_ix, paper_ids = load_indexes()
 
-    if chunk_ix is None or summary_ix is None or not paper_ids:
-        st.error("Indexes not found. Please run your RAG indexing first.")
-        return
+    #if chunk_ix is None or summary_ix is None or not paper_ids:
+    #    st.error("Indexes not found. Please run your RAG indexing first.")
+    #    return
 
     claude_api_key = st.secrets["claude"]["claude_auth"]
     client = anthropic.Client(api_key=claude_api_key)
