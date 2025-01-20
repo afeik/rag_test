@@ -15,10 +15,14 @@ from components.llm_agent import ClaudeAgent
 # ---------------------------
 # 1) Load / Initialize Globals
 # ---------------------------
-INDEX_FILE = "./faiss_index.bin"
-TEXT_CHUNKS_FILE = "./text_chunks.npy"
-SUMMARY_INDEX_FILE = "./faiss_index_summaries.bin"
-METADATA_FILE = "./metadata.json"
+import pathlib
+
+BASE_DIR = pathlib.Path(__file__).parent
+
+INDEX_FILE = str(BASE_DIR / "faiss_index.bin")
+TEXT_CHUNKS_FILE = str(BASE_DIR / "text_chunks.npy")
+SUMMARY_INDEX_FILE = str(BASE_DIR / "faiss_index_summaries.bin")
+METADATA_FILE = str(BASE_DIR / "metadata.json")
 
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 EMBEDDING_MODEL = SentenceTransformer(EMBEDDING_MODEL_NAME)
