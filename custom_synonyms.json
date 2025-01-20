@@ -1,0 +1,781 @@
+{
+    "photovoltaic": [
+        "PV",
+        "solar cells",
+        "solar energy conversion",
+        "solar modules"
+    ],
+    "solar power": [
+        "PV",
+        "photovoltaic",
+        "solar",
+        "solar energy",
+        "solar farms",
+        "solar panels"
+    ],
+    "PV": [
+        "photovoltaic",
+        "solar cells",
+        "solar energy conversion",
+        "solar modules"
+    ],
+    "solar farms": [
+        "PV",
+        "photovoltaic",
+        "solar",
+        "solar energy",
+        "solar panels",
+        "solar power"
+    ],
+    "solar energy": [
+        "PV",
+        "photovoltaic",
+        "solar",
+        "solar farms",
+        "solar panels",
+        "solar power"
+    ],
+    "solar": [
+        "PV",
+        "photovoltaic",
+        "solar energy",
+        "solar farms",
+        "solar panels",
+        "solar power"
+    ],
+    "solar panels": [
+        "PV panels",
+        "photovoltaic panels",
+        "solar arrays",
+        "solar modules"
+    ],
+    "solar cells": [
+        "PV",
+        "photovoltaic",
+        "solar energy conversion",
+        "solar modules"
+    ],
+    "solar modules": [
+        "PV panels",
+        "photovoltaic panels",
+        "solar arrays",
+        "solar panels"
+    ],
+    "solar energy conversion": [
+        "PV",
+        "photovoltaic",
+        "solar cells",
+        "solar modules"
+    ],
+    "photovoltaic panels": [
+        "PV panels",
+        "solar arrays",
+        "solar modules",
+        "solar panels"
+    ],
+    "PV panels": [
+        "photovoltaic panels",
+        "solar arrays",
+        "solar modules",
+        "solar panels"
+    ],
+    "solar arrays": [
+        "PV panels",
+        "photovoltaic panels",
+        "solar modules",
+        "solar panels"
+    ],
+    "solar park": [
+        "photovoltaic power station",
+        "solar farm",
+        "solar power plant"
+    ],
+    "photovoltaic power station": [
+        "solar farm",
+        "solar park",
+        "solar power plant"
+    ],
+    "solar farm": [
+        "photovoltaic power station",
+        "solar park",
+        "solar power plant"
+    ],
+    "solar power plant": [
+        "photovoltaic power station",
+        "solar farm",
+        "solar park"
+    ],
+    "PV cell": [
+        "photovoltaic cell",
+        "solar cell",
+        "solar energy unit"
+    ],
+    "solar cell": [
+        "PV cell",
+        "photovoltaic cell",
+        "solar energy unit"
+    ],
+    "photovoltaic cell": [
+        "PV cell",
+        "solar cell",
+        "solar energy unit"
+    ],
+    "solar energy unit": [
+        "PV cell",
+        "photovoltaic cell",
+        "solar cell"
+    ],
+    "clean energy": [
+        "alternative energy",
+        "green energy",
+        "renewable energy",
+        "sustainable energy"
+    ],
+    "alternative energy": [
+        "clean energy",
+        "green energy",
+        "renewable energy",
+        "sustainable energy"
+    ],
+    "sustainable energy": [
+        "clean power",
+        "green energy",
+        "renewable energy",
+        "renewables"
+    ],
+    "renewable energy": [
+        "clean power",
+        "green energy",
+        "renewables",
+        "sustainable energy"
+    ],
+    "green energy": [
+        "clean power",
+        "renewable energy",
+        "renewables",
+        "sustainable energy"
+    ],
+    "sun's energy": [
+        "solar flux",
+        "solar irradiance",
+        "solar radiation",
+        "sunlight"
+    ],
+    "solar irradiance": [
+        "solar flux",
+        "solar radiation",
+        "sun's energy",
+        "sunlight"
+    ],
+    "solar flux": [
+        "solar irradiance",
+        "solar radiation",
+        "sun's energy",
+        "sunlight"
+    ],
+    "sunlight": [
+        "solar flux",
+        "solar irradiance",
+        "solar radiation",
+        "sun's energy"
+    ],
+    "solar radiation": [
+        "solar flux",
+        "solar irradiance",
+        "sun's energy",
+        "sunlight"
+    ],
+    "energy conversion rate": [
+        "photovoltaic efficiency",
+        "solar efficiency",
+        "solar output"
+    ],
+    "solar output": [
+        "energy conversion rate",
+        "photovoltaic efficiency",
+        "solar efficiency"
+    ],
+    "solar efficiency": [
+        "energy conversion rate",
+        "photovoltaic efficiency",
+        "solar output"
+    ],
+    "photovoltaic efficiency": [
+        "energy conversion rate",
+        "solar efficiency",
+        "solar output"
+    ],
+    "decarbonization": [
+        "carbon neutrality",
+        "carbon reduction",
+        "low-carbon transition",
+        "net-zero transition"
+    ],
+    "energy system transformation": [
+        "clean energy transition",
+        "decarbonization",
+        "energy shift",
+        "energy transition",
+        "transition to renewable energy"
+    ],
+    "clean energy transition": [
+        "decarbonization",
+        "energy shift",
+        "energy system transformation",
+        "energy transition",
+        "transition to renewable energy"
+    ],
+    "energy shift": [
+        "clean energy transition",
+        "decarbonization",
+        "energy system transformation",
+        "energy transition",
+        "transition to renewable energy"
+    ],
+    "transition to renewable energy": [
+        "clean energy transition",
+        "decarbonization",
+        "energy shift",
+        "energy system transformation",
+        "energy transition"
+    ],
+    "energy transition": [
+        "clean energy transition",
+        "decarbonization",
+        "energy shift",
+        "energy system transformation",
+        "transition to renewable energy"
+    ],
+    "renewables": [
+        "clean power",
+        "green energy",
+        "renewable energy",
+        "sustainable energy"
+    ],
+    "clean power": [
+        "green energy",
+        "renewable energy",
+        "renewables",
+        "sustainable energy"
+    ],
+    "energy network": [
+        "distribution grid",
+        "electric grid",
+        "electricity infrastructure",
+        "power grid"
+    ],
+    "electricity infrastructure": [
+        "distribution grid",
+        "electric grid",
+        "energy network",
+        "power grid"
+    ],
+    "distribution grid": [
+        "electric grid",
+        "electricity infrastructure",
+        "energy network",
+        "power grid"
+    ],
+    "power grid": [
+        "distribution grid",
+        "electric grid",
+        "electricity infrastructure",
+        "energy network"
+    ],
+    "electric grid": [
+        "distribution grid",
+        "electricity infrastructure",
+        "energy network",
+        "power grid"
+    ],
+    "lithium-ion storage": [
+        "battery storage",
+        "energy reservoir",
+        "energy storage",
+        "power banks"
+    ],
+    "power banks": [
+        "battery storage",
+        "energy reservoir",
+        "energy storage",
+        "lithium-ion storage"
+    ],
+    "energy reservoir": [
+        "battery storage",
+        "energy storage",
+        "lithium-ion storage",
+        "power banks"
+    ],
+    "battery storage": [
+        "energy reservoir",
+        "energy storage",
+        "lithium-ion storage",
+        "power banks"
+    ],
+    "energy storage": [
+        "battery storage",
+        "energy reservoir",
+        "lithium-ion storage",
+        "power banks"
+    ],
+    "carbon neutrality": [
+        "carbon reduction",
+        "decarbonization",
+        "low-carbon transition",
+        "net-zero transition"
+    ],
+    "net-zero transition": [
+        "carbon neutrality",
+        "carbon reduction",
+        "decarbonization",
+        "low-carbon transition"
+    ],
+    "carbon reduction": [
+        "carbon neutrality",
+        "decarbonization",
+        "low-carbon transition",
+        "net-zero transition"
+    ],
+    "low-carbon transition": [
+        "carbon neutrality",
+        "carbon reduction",
+        "decarbonization",
+        "net-zero transition"
+    ],
+    "energy policy": [
+        "clean energy regulation",
+        "decarbonization strategy",
+        "renewable energy policy"
+    ],
+    "renewable energy policy": [
+        "clean energy regulation",
+        "decarbonization strategy",
+        "energy policy"
+    ],
+    "clean energy regulation": [
+        "decarbonization strategy",
+        "energy policy",
+        "renewable energy policy"
+    ],
+    "decarbonization strategy": [
+        "clean energy regulation",
+        "energy policy",
+        "renewable energy policy"
+    ],
+    "energy conservation": [
+        "efficient energy use",
+        "energy efficiency",
+        "energy savings"
+    ],
+    "efficient energy use": [
+        "energy conservation",
+        "energy efficiency",
+        "energy savings"
+    ],
+    "energy savings": [
+        "efficient energy use",
+        "energy conservation",
+        "energy efficiency"
+    ],
+    "energy efficiency": [
+        "efficient energy use",
+        "energy conservation",
+        "energy savings"
+    ],
+    "grid modernization": [
+        "digital grid",
+        "electric grid transformation",
+        "grid upgrade",
+        "smart grid"
+    ],
+    "smart grid": [
+        "digital grid",
+        "electric grid transformation",
+        "grid modernization",
+        "grid upgrade"
+    ],
+    "grid upgrade": [
+        "digital grid",
+        "electric grid transformation",
+        "grid modernization",
+        "smart grid"
+    ],
+    "electric grid transformation": [
+        "digital grid",
+        "grid modernization",
+        "grid upgrade",
+        "smart grid"
+    ],
+    "digital grid": [
+        "electric grid transformation",
+        "grid modernization",
+        "grid upgrade",
+        "smart grid"
+    ],
+    "energy resilience": [
+        "energy security",
+        "energy system robustness",
+        "grid stability"
+    ],
+    "energy system robustness": [
+        "energy resilience",
+        "energy security",
+        "grid stability"
+    ],
+    "energy security": [
+        "energy resilience",
+        "energy system robustness",
+        "grid stability"
+    ],
+    "grid stability": [
+        "energy resilience",
+        "energy security",
+        "energy system robustness"
+    ],
+    "carbon mitigation": [
+        "climate adaptation",
+        "climate change mitigation",
+        "global warming reduction"
+    ],
+    "climate adaptation": [
+        "carbon mitigation",
+        "climate change mitigation",
+        "global warming reduction"
+    ],
+    "climate change mitigation": [
+        "carbon mitigation",
+        "climate adaptation",
+        "global warming reduction"
+    ],
+    "global warming reduction": [
+        "carbon mitigation",
+        "climate adaptation",
+        "climate change mitigation"
+    ],
+    "distributed power generation": [
+        "decentralized energy",
+        "distributed energy",
+        "localized energy systems"
+    ],
+    "distributed energy": [
+        "decentralized energy",
+        "distributed power generation",
+        "localized energy systems"
+    ],
+    "localized energy systems": [
+        "decentralized energy",
+        "distributed energy",
+        "distributed power generation"
+    ],
+    "decentralized energy": [
+        "distributed energy",
+        "distributed power generation",
+        "localized energy systems"
+    ],
+    "P2P energy trading": [
+        "community energy exchange",
+        "local energy markets",
+        "peer-to-peer energy trading"
+    ],
+    "community energy exchange": [
+        "P2P energy trading",
+        "local energy markets",
+        "peer-to-peer energy trading"
+    ],
+    "peer-to-peer energy trading": [
+        "P2P energy trading",
+        "community energy exchange",
+        "local energy markets"
+    ],
+    "local energy markets": [
+        "P2P energy trading",
+        "community energy exchange",
+        "peer-to-peer energy trading"
+    ],
+    "Zurich": [
+        "ZH",
+        "Zuerich",
+        "Zürich"
+    ],
+    "ZH": [
+        "Zuerich",
+        "Zurich",
+        "Zürich"
+    ],
+    "Zürich": [
+        "ZH",
+        "Zuerich",
+        "Zurich"
+    ],
+    "Zuerich": [
+        "ZH",
+        "Zurich",
+        "Zürich"
+    ],
+    "Berne": [
+        "BE",
+        "Bern"
+    ],
+    "Bern": [
+        "BE",
+        "Berne"
+    ],
+    "BE": [
+        "Bern",
+        "Berne"
+    ],
+    "LU": [
+        "Lucerne",
+        "Luzern"
+    ],
+    "Lucerne": [
+        "LU",
+        "Luzern"
+    ],
+    "Luzern": [
+        "LU",
+        "Lucerne"
+    ],
+    "UR": [
+        "Uri"
+    ],
+    "Uri": [
+        "UR"
+    ],
+    "SZ": [
+        "Schwyz"
+    ],
+    "Schwyz": [
+        "SZ"
+    ],
+    "OW": [
+        "Obwalden"
+    ],
+    "Obwalden": [
+        "OW"
+    ],
+    "NW": [
+        "Nidwalden"
+    ],
+    "Nidwalden": [
+        "NW"
+    ],
+    "GL": [
+        "Glarus"
+    ],
+    "Glarus": [
+        "GL"
+    ],
+    "Zug": [
+        "ZG"
+    ],
+    "ZG": [
+        "Zug"
+    ],
+    "FR": [
+        "Freiburg",
+        "Fribourg"
+    ],
+    "Freiburg": [
+        "FR",
+        "Fribourg"
+    ],
+    "Fribourg": [
+        "FR",
+        "Freiburg"
+    ],
+    "SO": [
+        "Solothurn"
+    ],
+    "Solothurn": [
+        "SO"
+    ],
+    "Basel-Stadt": [
+        "BS",
+        "Basel City",
+        "Basel Stadt"
+    ],
+    "BS": [
+        "Basel City",
+        "Basel Stadt",
+        "Basel-Stadt"
+    ],
+    "Basel Stadt": [
+        "BS",
+        "Basel City",
+        "Basel-Stadt"
+    ],
+    "Basel City": [
+        "BS",
+        "Basel Stadt",
+        "Basel-Stadt"
+    ],
+    "Basel Country": [
+        "BL",
+        "Basel-Landschaft",
+        "Baselland"
+    ],
+    "Baselland": [
+        "BL",
+        "Basel Country",
+        "Basel-Landschaft"
+    ],
+    "BL": [
+        "Basel Country",
+        "Basel-Landschaft",
+        "Baselland"
+    ],
+    "Basel-Landschaft": [
+        "BL",
+        "Basel Country",
+        "Baselland"
+    ],
+    "Schaffhausen": [
+        "SH"
+    ],
+    "SH": [
+        "Schaffhausen"
+    ],
+    "Appenzell Ausserrhoden": [
+        "AR"
+    ],
+    "AR": [
+        "Appenzell Ausserrhoden"
+    ],
+    "AI": [
+        "Appenzell Innerrhoden"
+    ],
+    "Appenzell Innerrhoden": [
+        "AI"
+    ],
+    "Saint Gallen": [
+        "SG",
+        "Sankt Gallen",
+        "St. Gallen"
+    ],
+    "St. Gallen": [
+        "SG",
+        "Saint Gallen",
+        "Sankt Gallen"
+    ],
+    "Sankt Gallen": [
+        "SG",
+        "Saint Gallen",
+        "St. Gallen"
+    ],
+    "SG": [
+        "Saint Gallen",
+        "Sankt Gallen",
+        "St. Gallen"
+    ],
+    "Grisons": [
+        "GR",
+        "Graubünden",
+        "Grigioni",
+        "Grischun"
+    ],
+    "Grigioni": [
+        "GR",
+        "Graubünden",
+        "Grischun",
+        "Grisons"
+    ],
+    "Grischun": [
+        "GR",
+        "Graubünden",
+        "Grigioni",
+        "Grisons"
+    ],
+    "Graubünden": [
+        "GR",
+        "Grigioni",
+        "Grischun",
+        "Grisons"
+    ],
+    "GR": [
+        "Graubünden",
+        "Grigioni",
+        "Grischun",
+        "Grisons"
+    ],
+    "Aargau": [
+        "AG",
+        "Argovia"
+    ],
+    "AG": [
+        "Aargau",
+        "Argovia"
+    ],
+    "Argovia": [
+        "AG",
+        "Aargau"
+    ],
+    "TG": [
+        "Thurgau"
+    ],
+    "Thurgau": [
+        "TG"
+    ],
+    "Ticino": [
+        "TI"
+    ],
+    "TI": [
+        "Ticino"
+    ],
+    "VD": [
+        "Vaud"
+    ],
+    "Vaud": [
+        "VD"
+    ],
+    "Wallis": [
+        "VS",
+        "Valais"
+    ],
+    "VS": [
+        "Valais",
+        "Wallis"
+    ],
+    "Valais": [
+        "VS",
+        "Wallis"
+    ],
+    "NE": [
+        "Neuchatel",
+        "Neuchâtel"
+    ],
+    "Neuchatel": [
+        "NE",
+        "Neuchâtel"
+    ],
+    "Neuchâtel": [
+        "NE",
+        "Neuchatel"
+    ],
+    "Geneva": [
+        "GE",
+        "Genf",
+        "Genève"
+    ],
+    "Genf": [
+        "GE",
+        "Geneva",
+        "Genève"
+    ],
+    "GE": [
+        "Geneva",
+        "Genf",
+        "Genève"
+    ],
+    "Genève": [
+        "GE",
+        "Geneva",
+        "Genf"
+    ],
+    "JU": [
+        "Jura"
+    ],
+    "Jura": [
+        "JU"
+    ]
+}
