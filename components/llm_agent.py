@@ -1,3 +1,5 @@
+# components/llm_agent.py
+
 import anthropic
 
 GENERAL_ROLE = """You are an AI Chatbot dedicated to supporting Switzerland's solar energy project...
@@ -10,7 +12,7 @@ class ClaudeAgent:
 
     def generate_prompt(self, conversation_messages, rag_context):
         """
-        Build the system + conversation + user question into a single prompt.
+        Builds the conversation text to be sent as a user message.
         """
         conversation_text = ""
         for msg in conversation_messages:
@@ -19,24 +21,51 @@ class ClaudeAgent:
             else:
                 conversation_text += f"User: {msg['content']}\n\n"
 
-        prompt = (
-            f"{anthropic.HUMAN_PROMPT}SYSTEM: {GENERAL_ROLE}\n\n"
+        user_msg = (
             f"{conversation_text}"
             f"(Use the following context if relevant):\n{rag_context}\n\n"
-            f"{anthropic.AI_PROMPT}"
         )
-        return prompt
+        return user_msg
 
     def call_claude(self, conversation_messages, rag_context, max_tokens=700, temperature=0.7):
         """
         Calls Claude with the entire conversation + new context, returns the assistant's reply.
         """
-        prompt = self.generate_prompt(conversation_messages, rag_context)
+        user_msg = self.generate_prompt(conversation_messages, rag_context)
+
         response = self.client.messages.create(
-            model="claude-3-5-haiku-20241022",  # or "claude-2.0-100k", etc. 
-                               #  (use your desired Claude variant)
+            model="claude-3-5-haiku-20241022",  # Replace with your chosen Claude model
             max_tokens=max_tokens,
             temperature=temperature,
-            messages=[{"role": "user", "content": prompt}]
+            system=GENERAL_ROLE,  # Pass system prompt separately
+            messages=[
+                {"role": "user", "content": user_msg}
+            ]
+        )
+        return response.content[0].text.strip()
+
+    def summarize_text(self, text, max_tokens=1024, temperature=0.3):
+        """
+        Produces a concise summary of the given text using Claude.
+        Uses message-based format to ensure the text is fully included.
+        """
+        # Fallback if there's no text
+        if not text.strip():
+            return "No text to summarize."
+
+        system_msg = (
+            "You are a helpful AI that summarizes text into a concise paragraph. "
+            "Focus on the key insights. Avoid excessive details or bullet points."
+        )
+        user_msg = f"Please summarize the following text:\n\n{text}"
+
+        response = self.client.messages.create(
+            model="claude-3-5-haiku-20241022",    # Or "claude-2-100k", "claude-1.3", etc.
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=system_msg,  # Pass system prompt separately
+            messages=[
+                {"role": "user", "content": user_msg}
+            ]
         )
         return response.content[0].text.strip()

@@ -1,11 +1,12 @@
 # update_rag.py
+
 import os
 import json
 import numpy as np
 import faiss
 import anthropic
 from sentence_transformers import SentenceTransformer
-import streamlit as st 
+import streamlit as st
 
 from components.preprocessing import (
     PDFProcessingAgent,
@@ -26,7 +27,7 @@ EMBEDDING_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
 EMBEDDING_MODEL = SentenceTransformer(EMBEDDING_MODEL_NAME)
 
 # If you want summarization
-CLAUDE_API_KEY = st.secrets["claude"]["claude_auth"] # or use a secrets manager
+CLAUDE_API_KEY = st.secrets["claude"]["claude_auth"]  # or from another secrets manager
 client = anthropic.Client(api_key=CLAUDE_API_KEY)
 claude_agent = ClaudeAgent(client)
 
@@ -42,7 +43,7 @@ def main():
     new_doc_chunks, changed = pdf_agent.process_pdfs()
     print(f"PDF Processing complete. Changed: {changed}, new chunks: {len(new_doc_chunks)}")
 
-    # 2) Build or update the chunk-level index
+    # 2) Build or update the chunk-level index (Using HNSWFlat to avoid clustering warnings)
     embedding_agent = EmbeddingIndexAgent(
         model=EMBEDDING_MODEL,
         index_file=INDEX_FILE,
@@ -60,17 +61,26 @@ def main():
         metadata = json.load(f)
 
     for pdf_file, info in metadata.items():
-        # Skip special keys
         if pdf_file == "_paper_id_order":
             continue
-        # Summarize if no summary yet
+        # Summarize if "summary" is missing but we do have a "hash"
         if isinstance(info, dict) and "summary" not in info and "hash" in info:
             print(f"Summarizing paper: {pdf_file}")
-            # Collect only chunks for this PDF
+            # Get chunks for this PDF
             pdf_chunks = [c["chunk"] for c in new_doc_chunks if c["title"] == pdf_file]
             combined_text = "\n".join(pdf_chunks)[:12000]  # limit length
-            summary = claude_agent.summarize_text(combined_text)
-            metadata[pdf_file]["summary"] = summary
+
+            if combined_text.strip():
+                try:
+                    summary = claude_agent.summarize_text(combined_text)
+                    metadata[pdf_file]["summary"] = summary
+                    print(f"Summary for '{pdf_file}': {summary[:100]}...")  # Print first 100 chars
+                except Exception as e:
+                    print(f"Error summarizing '{pdf_file}': {e}")
+                    metadata[pdf_file]["summary"] = "Error generating summary."
+            else:
+                metadata[pdf_file]["summary"] = "No text to summarize."
+                print(f"No text extracted for '{pdf_file}'. Summary set to default.")
 
     with open(METADATA_FILE, "w") as f:
         json.dump(metadata, f, indent=2)

@@ -1,4 +1,5 @@
 # components/preprocessing.py
+
 import os
 import re
 import json
@@ -57,10 +58,6 @@ def spacy_semantic_splitter(text, max_chunk_size=1500, chunk_overlap=50):
         list: A list of chunk strings.
     """
 
-    # Optionally, you could first split by paragraphs before applying sentence-splitting:
-    # paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
-    # text = "\n".join(paragraphs)
-
     doc = nlp(text)
     sentences = [sent.text.strip() for sent in doc.sents if sent.text.strip()]
 
@@ -69,30 +66,23 @@ def spacy_semantic_splitter(text, max_chunk_size=1500, chunk_overlap=50):
 
     for sentence in sentences:
         if len(current_chunk) + len(sentence) + 1 <= max_chunk_size:
-            # Add sentence to current chunk
             if current_chunk:
                 current_chunk += " " + sentence
             else:
                 current_chunk = sentence
         else:
-            # Store the current chunk
             chunks.append(current_chunk.strip())
-
-            # Overlap logic: take the last `chunk_overlap` characters from current_chunk
+            # Overlap logic
             if chunk_overlap > 0 and len(current_chunk) > chunk_overlap:
                 overlap_text = current_chunk[-chunk_overlap:]
             else:
                 overlap_text = ""
-
-            # Start a new chunk with the overlap text + current sentence
             current_chunk = overlap_text + " " + sentence
 
-    # Add the final chunk if non-empty
     if current_chunk.strip():
         chunks.append(current_chunk.strip())
 
     return chunks
-
 
 ########################################
 #         QUERY PREPROCESSING          #
@@ -101,9 +91,7 @@ def spacy_semantic_splitter(text, max_chunk_size=1500, chunk_overlap=50):
 def preprocess_user_query(query, custom_synonyms=None, max_synonyms=2):
     """
     Normalizes and expands the user's query with synonyms from custom dictionary and WordNet.
-    This can help catch more relevant matches in semantic search.
     """
-    # Keep alphanumeric text, remove other punctuation
     query = re.sub(r"[^a-zA-Z0-9\s]", " ", query)
     doc = nlp(query)
 
@@ -116,7 +104,6 @@ def preprocess_user_query(query, custom_synonyms=None, max_synonyms=2):
         original_lower = token.text.lower()
         lemma_lower = token.lemma_.lower()
 
-        # Always include the original token
         synonyms = {token.text}
 
         # Custom synonyms if provided
@@ -143,13 +130,11 @@ def preprocess_user_query(query, custom_synonyms=None, max_synonyms=2):
                 if len(synonyms) >= (max_synonyms + 1):
                     break
 
-        # Join expansions inline (limit total expansions)
         synonyms_list = sorted(synonyms, key=lambda s: s.lower())
         synonyms_joined = " / ".join(synonyms_list[: (max_synonyms + 1)])
         processed_query.append(synonyms_joined)
 
     return " ".join(processed_query)
-
 
 ########################################
 #        PDF PROCESSING AGENT          #
@@ -161,7 +146,7 @@ class PDFProcessingAgent:
         Args:
             folder (str): Path to the folder containing PDFs
             splitter_func (callable): A function to split text into chunks
-            metadata_file (str): JSON file to track PDF metadata (hashes, summaries, etc.)
+            metadata_file (str): JSON file to track PDF metadata
         """
         self.folder = folder
         self.splitter_func = splitter_func
@@ -188,7 +173,6 @@ class PDFProcessingAgent:
     def _extract_text_pymupdf(self, pdf_path):
         """
         Use PyMuPDF (fitz) to extract text from PDF pages.
-        Cleans up page numbers and other possible noise.
         """
         try:
             doc = fitz.open(pdf_path)
@@ -198,11 +182,9 @@ class PDFProcessingAgent:
         all_text = []
         for page in doc:
             page_text = page.get_text("text") or ""
-            # Basic cleanup
             page_text = re.sub(r"Page\s*\d+(\s+of\s+\d+)?", "", page_text, flags=re.IGNORECASE)
             page_text = re.sub(r"^\s*\d+\s*$", "", page_text, flags=re.MULTILINE)
             page_text = page_text.encode("utf-8", errors="replace").decode("utf-8")
-
             if page_text.strip():
                 all_text.append(page_text)
 
@@ -210,42 +192,45 @@ class PDFProcessingAgent:
 
     def _extract_from_abstract(self, full_text):
         """
-        Optionally extracts text starting from 'abstract' until 'references'.
-        If not found, returns entire text. Skips some disclaimers.
+        Extracts text from 'Abstract' to 'References'.
+        If 'Abstract' is not found, extracts from the beginning to 'References'.
+        If 'References' is not found, extracts from 'Abstract' to the end.
+        If neither is found, returns the full text.
         """
-        # Remove generic disclaimers, e.g. "© 20XX..."
+        # Remove copyright notice
         full_text = re.sub(r"©\s*20\d{2}.*", "", full_text, flags=re.IGNORECASE)
 
         abstract_pattern = r"(?i)\babstract\b"
         references_pattern = r"(?i)\breferences\b"
 
-        lowered_text = full_text.lower()
-        abstract_match = re.search(abstract_pattern, lowered_text)
-        references_match = re.search(references_pattern, lowered_text)
+        abstract_match = re.search(abstract_pattern, full_text)
+        references_match = re.search(references_pattern, full_text)
 
-        start_idx = abstract_match.start() if abstract_match else 0
-        end_idx = references_match.start() if references_match else len(full_text)
+        if abstract_match and references_match:
+            start_idx = abstract_match.end()
+            end_idx = references_match.start()
+            extracted_text = full_text[start_idx:end_idx]
+        elif abstract_match:
+            start_idx = abstract_match.end()
+            extracted_text = full_text[start_idx:]
+        elif references_match:
+            end_idx = references_match.start()
+            extracted_text = full_text[:end_idx]
+        else:
+            extracted_text = full_text
 
-        extracted_text = full_text[start_idx:end_idx]
-        # Remove excessive blank lines
+        # Clean up multiple newlines
         extracted_text = re.sub(r"\n\s*\n+", "\n\n", extracted_text)
         return extracted_text.strip()
 
     def _extract_title_from_filename(self, filename):
-        """
-        Utility to extract base name without extension, if you need it.
-        """
         return os.path.splitext(filename)[0]
 
     def process_pdfs(self):
         """
-        1. Scan folder for PDFs
-        2. For each new or changed PDF (by hash), extract text
-        3. Keep only the segment from 'Abstract' to 'References' if found
-        4. Split into semantic chunks
-        5. Store in text_chunks list
-        6. Update metadata with file hash and title
-        7. Clean metadata for removed files
+        - Scan folder for PDFs
+        - For each new or changed PDF, extract text and split into chunks
+        - Return newly added chunks
         """
         text_chunks = []
         changed = False
@@ -255,25 +240,24 @@ class PDFProcessingAgent:
             pdf_path = os.path.join(self.folder, pdf_file)
             file_hash = self._compute_file_hash(pdf_path)
 
-            # If it's a new or modified PDF
+            # If new or changed
             if pdf_file not in self.metadata or self.metadata[pdf_file].get("hash") != file_hash:
                 raw_text = self._extract_text_pymupdf(pdf_path)
                 processed_text = self._extract_from_abstract(raw_text)
 
-                # Now do the semantic split
+                print(f"Processing '{pdf_file}': Extracted text length = {len(processed_text)} characters.")
+
                 chunks = self.splitter_func(processed_text)
-                # Use pdf_file as the unique identifier for each chunk
                 doc_chunks = [{"chunk": chunk, "title": pdf_file} for chunk in chunks]
                 text_chunks.extend(doc_chunks)
 
-                # Update metadata
                 if pdf_file not in self.metadata:
                     self.metadata[pdf_file] = {}
                 self.metadata[pdf_file]["hash"] = file_hash
                 self.metadata[pdf_file]["title"] = pdf_file
                 changed = True
 
-        # Remove metadata for files that no longer exist
+        # Clean up metadata for removed PDFs
         existing_files = set(pdf_files)
         for file in list(self.metadata.keys()):
             if file not in existing_files and file != "_paper_id_order":
@@ -283,28 +267,21 @@ class PDFProcessingAgent:
         self._save_metadata()
         return text_chunks, changed
 
-
 ########################################
 #   PAPER SUMMARIES & TWO-STAGE INDEX  #
 ########################################
 
 class PaperSummariesIndexAgent:
     """
-    Maintains a separate FAISS index for paper-level summaries (Stage 1).
+    Maintains a separate FAISS index for paper-level summaries.
     """
     def __init__(self, model, summary_index_file, metadata_file):
-        """
-        Args:
-            model: SentenceTransformer or similar
-            summary_index_file: Path to store/load paper-level FAISS index
-            metadata_file: The same metadata file that contains summaries
-        """
         self.model = model
         self.summary_index_file = summary_index_file
         self.metadata_file = metadata_file
         self.metadata = self._load_metadata()
         self.faiss_index_summaries = None
-        self.paper_ids = []  # store the order of paper filenames
+        self.paper_ids = []
 
     def _load_metadata(self):
         if os.path.exists(self.metadata_file):
@@ -318,23 +295,19 @@ class PaperSummariesIndexAgent:
 
     def load_or_create_summary_index(self):
         """
-        If summary index file exists, read it.
-        Otherwise, create a new one from metadata's existing summaries.
+        If summary index file exists, read it. Otherwise build a new index from existing summaries.
         """
         if os.path.exists(self.summary_index_file):
             self.faiss_index_summaries = faiss.read_index(self.summary_index_file)
             self.paper_ids = self.metadata.get("_paper_id_order", [])
         else:
-            # Build new summary index from metadata
             summaries, self.paper_ids = [], []
             for pdf_file, info in self.metadata.items():
                 if isinstance(info, dict) and "summary" in info:
-                    summary = info["summary"]
-                    summaries.append(summary)
+                    summaries.append(info["summary"])
                     self.paper_ids.append(pdf_file)
 
             if not summaries:
-                # No summaries => can't build index yet
                 return None
 
             summary_embeddings = self.model.encode(summaries, show_progress_bar=False)
@@ -344,6 +317,7 @@ class PaperSummariesIndexAgent:
             )
 
             dimension = summary_embeddings.shape[1]
+            # Using HNSWFlat for summaries
             self.faiss_index_summaries = faiss.IndexHNSWFlat(dimension, 32)
             self.faiss_index_summaries.hnsw.efConstruction = 80
             self.faiss_index_summaries.hnsw.efSearch = 80
@@ -357,9 +331,6 @@ class PaperSummariesIndexAgent:
         return self.faiss_index_summaries
 
     def update_summary_in_metadata(self, pdf_file, summary):
-        """
-        Store the newly generated summary in metadata, to be indexed later.
-        """
         if pdf_file not in self.metadata:
             self.metadata[pdf_file] = {}
         self.metadata[pdf_file]["summary"] = summary
@@ -367,8 +338,7 @@ class PaperSummariesIndexAgent:
 
     def add_new_summaries_to_index(self):
         """
-        If new summaries exist in metadata but not in the existing index,
-        add them to the summary index.
+        If new summaries exist in metadata but not in the existing index, add them.
         """
         if self.faiss_index_summaries is None:
             return self.load_or_create_summary_index()
@@ -383,7 +353,7 @@ class PaperSummariesIndexAgent:
                 new_ids.append(pdf_file)
 
         if not new_summaries:
-            return self.faiss_index_summaries  # Nothing to add
+            return self.faiss_index_summaries
 
         summary_embeddings = self.model.encode(new_summaries, show_progress_bar=False)
         summary_embeddings = np.array(
@@ -391,8 +361,8 @@ class PaperSummariesIndexAgent:
             dtype="float32"
         )
         self.faiss_index_summaries.add(summary_embeddings)
-
         self.paper_ids.extend(new_ids)
+
         faiss.write_index(self.faiss_index_summaries, self.summary_index_file)
         self.metadata["_paper_id_order"] = self.paper_ids
         self._save_metadata()
@@ -401,15 +371,14 @@ class PaperSummariesIndexAgent:
 
     def search_paper_summaries(self, query_vector, k=3):
         """
-        Stage 1 retrieval: find the top-k most relevant paper summaries.
+        Stage 1 retrieval: find top-k relevant paper summaries.
         Returns a list of PDF filenames in descending order of relevance.
         """
         if self.faiss_index_summaries is None or len(self.paper_ids) == 0:
             return []
 
-        # Synchronize if needed
         if len(self.paper_ids) != self.faiss_index_summaries.ntotal:
-            print("Mismatch detected between paper_ids length and FAISS index total. Rebuilding index.")
+            print("Mismatch in paper_ids vs. index total. Rebuilding summary index.")
             self.faiss_index_summaries = self.load_or_create_summary_index()
 
         distances, indices = self.faiss_index_summaries.search(
@@ -421,9 +390,8 @@ class PaperSummariesIndexAgent:
             if 0 <= idx < len(self.paper_ids):
                 top_files.append(self.paper_ids[idx])
             else:
-                print(f"Warning: Received out-of-bound index {idx} in paper summary search.")
+                print(f"Warning: out-of-bound index {idx} in summary search.")
         return top_files
-
 
 ########################################
 #     EMBEDDING INDEX AGENT (CHUNKS)   #
@@ -431,7 +399,7 @@ class PaperSummariesIndexAgent:
 
 class EmbeddingIndexAgent:
     """
-    Stage 2 index agent for chunk-level embeddings.
+    Stage 2 index agent for chunk-level embeddings, using HNSWFlat for approximate search.
     """
     def __init__(self, model, index_file, chunks_file):
         self.model = model
@@ -452,16 +420,22 @@ class EmbeddingIndexAgent:
 
         if faiss_index is None:
             dimension = new_embeddings.shape[1]
-            faiss_index = faiss.IndexHNSWFlat(dimension, 32)
-            faiss_index.hnsw.efConstruction = 80
-            faiss_index.hnsw.efSearch = 80
-            faiss_index.metric_type = faiss.METRIC_INNER_PRODUCT
-            faiss_index.add(new_embeddings)
+
+            # Using HNSWFlat for chunk-level embeddings
+            hnsw_index = faiss.IndexHNSWFlat(dimension, 32)  # 32 is the M parameter
+            hnsw_index.hnsw.efConstruction = 80
+            hnsw_index.hnsw.efSearch = 80
+            hnsw_index.metric_type = faiss.METRIC_INNER_PRODUCT
+            hnsw_index.add(new_embeddings)
+
+            faiss_index = hnsw_index
         else:
+            # Assuming HNSWFlat index
             faiss_index.add(new_embeddings)
 
         updated_text_chunks = existing_text_chunks + new_doc_chunks
 
+        # Persist
         faiss.write_index(faiss_index, self.index_file)
         np.save(self.chunks_file, updated_text_chunks)
 
